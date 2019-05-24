@@ -79,25 +79,33 @@ class Uranium extends Atom {
 	}
 }
 
+function sigmoid(z) {
+    return 1 / (1 + Math.exp(-z));
+}
+
 class Neutron extends Particle {
 	constructor(pos, vel) {
 		super(pos, vel, 5, 1, "n");
 		this.speed = vel.mag();
 		this.escaped = false;
+		this.escapeProbabiliy = sigmoid(this.speed / 10);
+		console.log(this.escapeProbabiliy);
 	}
 	draw() {
 		super.draw();
-		if (!this.escaped && random() < 5 / this.speed) {
-			if (this.pos.x < this.radius || this.pos.x + this.radius > width) {
-				this.vel.x *= -1;
-			}
-			if (this.pos.y < this.radius || this.pos.y + this.radius > height) {
-				this.vel.y *= -1;
-			}
-		} else {
-			if (this.pos.x < this.radius || this.pos.x + this.radius > width || this.pos.y < this.radius || this.pos.y + this.radius > width) {
-				this.escaped = true;
-			}
+		const escapeX = this.pos.x < this.radius || this.pos.x + this.radius > width;
+		const escapeY = this.pos.y < this.radius || this.pos.y + this.radius > height;
+		if (escapeX || escapeY) {
+		    if (Math.random() > this.escapeProbabiliy) {
+		        if (escapeX) {
+		            this.vel.x *= -1;
+		        }
+		        if (escapeY) {
+		            this.vel.y *= -1;
+		        }
+		    } else {
+		        this.escaped = true;
+		    }
 		}
 	}
 }
@@ -123,7 +131,7 @@ class Button {
 			fill('white');
 		} else {
 			noStroke();
-			fill('white');
+			fill('grey');
 		}
 		textSize(this.textSize);
 		text(this.text, this.x, this.y + this.height);
@@ -155,7 +163,7 @@ class Slider {
 		this.isDragging = false;
 	}
 	mouseOver() {
-		return this.kleft <= mouseX && mouseX <= this.kright && this.top <= mouseY && mouseY <= this.bottom;
+		return this.kleft <= mouseX && mouseX <= this.kright && this.top - this.kh <= mouseY && mouseY <= this.bottom + this.kh;
 	}
 	knobPosition() {
 		return this.bottom - this.h * (this.value - this.begin) / this.range;
@@ -171,7 +179,12 @@ class Slider {
 	}
 	draw() {
 		noStroke();
-		fill('white');
+		if (this.mouseOver() || this.isDragging) {
+		    fill('white');
+		    stroke('white');
+		} else {
+		    fill('grey');
+		}
 		textSize(this.textSize);
 		text(this.text, this.x, this.y);
 		
@@ -199,7 +212,7 @@ function setup() {
 		neutronList = [];
 		uraniumList = [];
 		neutron_speed = neutronSpeedSlider.value;
-		uranium_spacing = uraniumSpacingSlider.value;
+		uranium_spacing =  Math.pow(uraniumSpacingSlider.value, .75) * 3;
 		for (let x = width / 2; x < width; x += uranium_spacing) {
 			for (let y = 40; y < height; y += uranium_spacing) {
 				uraniumList.push(new Uranium(
@@ -208,12 +221,11 @@ function setup() {
 				));
 			}
 		}
-		let firstNeutronSpeed = p5.Vector.random2D().mult(neutron_speed);
-		firstNeutronSpeed.x = Math.abs(firstNeutronSpeed.x);
+		let firstNeutronSpeed = createVector(neutron_speed, 0).rotate(random(-PI / 8, PI / 8));
 		neutronList.push(
 			new Neutron(
 				createVector(width / 2 - 300, height / 2),
-				firstNeutronSpeed,
+				firstNeutronSpeed
 			)
 		);
 	});
@@ -277,9 +289,14 @@ function draw() {
 	atomList.forEach(p => {
 		p.draw();
 	});
-	neutronList.forEach(p => {
-		p.draw();
-	});
+	
+	for (let n = neutronList.length - 1; n >= 0; n--) {
+	    neutronList[n].draw();
+	    if (neutronList[n].escaped) {
+	        neutronList.slice(n, 1);
+	    }
+	}
+	
 	uraniumList.forEach(p => {
 		p.draw();
 	});
