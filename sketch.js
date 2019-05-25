@@ -40,7 +40,7 @@ class Atom extends Particle {
 		super(pos, vel, mass / 10, mass, name);
 	}
 
-	fission(neutron, particles) {
+	fission(neutron, neutrons, atoms) {{
 		return false;
 	}
 }
@@ -51,6 +51,8 @@ class Uranium extends Atom {
 	}
 
 	fission(neutron, neutrons, atoms) {
+		if (random() > .05) return false;
+		
 		let imomentum = p5.Vector.add(this.momentum(), (neutrons[neutron].momentum()));
 
 		let nmomentum = createVector();
@@ -86,27 +88,9 @@ function sigmoid(z) {
 class Neutron extends Particle {
 	constructor(pos, vel) {
 		super(pos, vel, 5, 1, "n");
-		this.speed = vel.mag();
-		this.escaped = false;
-		this.escapeProbabiliy = sigmoid(this.speed / 10);
-		console.log(this.escapeProbabiliy);
 	}
 	draw() {
 		super.draw();
-		const escapeX = this.pos.x < this.radius || this.pos.x + this.radius > width;
-		const escapeY = this.pos.y < this.radius || this.pos.y + this.radius > height;
-		if (escapeX || escapeY) {
-		    if (Math.random() > this.escapeProbabiliy) {
-		        if (escapeX) {
-		            this.vel.x *= -1;
-		        }
-		        if (escapeY) {
-		            this.vel.y *= -1;
-		        }
-		    } else {
-		        this.escaped = true;
-		    }
-		}
 	}
 }
 
@@ -289,13 +273,6 @@ function draw() {
 	atomList.forEach(p => {
 		p.draw();
 	});
-	
-	for (let n = neutronList.length - 1; n >= 0; n--) {
-	    neutronList[n].draw();
-	    if (neutronList[n].escaped) {
-	        neutronList.slice(n, 1);
-	    }
-	}
 	
 	uraniumList.forEach(p => {
 		p.draw();
