@@ -1,5 +1,6 @@
 let uranium_spacing = 100;
 let neutron_speed = 5;
+let interact_chance;
 
 let font_1942;
 
@@ -51,7 +52,7 @@ class Uranium extends Atom {
 	}
 
 	fission(neutron, neutrons, atoms) {
-		if (random() < 0.6) return false;
+		if (random() > interact_chance) return false;
 		
 		let imomentum = p5.Vector.add(this.momentum(), (neutrons[neutron].momentum()));
 
@@ -186,14 +187,13 @@ let uraniumSpacingSlider;
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
-	frameRate(60);
 
 	restartButton = new Button(24, 24, '(Re)start', 24, function () {
 		atomList = [];
 		neutronList = [];
 		uraniumList = [];
 		neutron_speed = neutronSpeedSlider.value;
-		uranium_spacing =  Math.pow(uraniumSpacingSlider.value, .75) * 3;
+		uranium_spacing = Math.pow(uraniumSpacingSlider.value, .75) * 3;
 		for (let x = width / 2; x < width; x += uranium_spacing) {
 			for (let y = 40; y < height; y += uranium_spacing) {
 				uraniumList.push(new Uranium(
@@ -267,6 +267,9 @@ function removeRemoved(particles, toRemove) {
 function draw() {
 	background('black');
 
+	if (interact_chance === undefined && frameRate() > 0) {
+		interact_chance = 1 - pow((1 - .99), 1 / frameRate());
+	}
 	atomList.forEach(p => {
 		p.draw();
 	});
