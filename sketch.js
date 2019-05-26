@@ -58,7 +58,7 @@ class Uranium extends Atom {
 
 		let nmomentum = createVector();
 		for (let j = 0; j < 3; j++) {
-			let nn = new Neutron(this.pos.copy(), p5.Vector.add(this.vel, p5.Vector.random2D().mult(random(neutron_speed * .4, neutron_speed * 1.6))));
+			let nn = new Particle(this.pos.copy(), p5.Vector.add(this.vel, p5.Vector.random2D().mult(random(neutron_speed * .4, neutron_speed * 1.6))), 5, 1, "n");
 			neutrons.push(nn);
 			nmomentum.add(nn.momentum());
 		}
@@ -84,12 +84,6 @@ class Uranium extends Atom {
 
 function sigmoid(z) {
     return 1 / (1 + Math.exp(-z));
-}
-
-class Neutron extends Particle {
-	constructor(pos, vel) {
-		super(pos, vel, 5, 1, "n");
-	}
 }
 
 class Button {
@@ -204,9 +198,10 @@ function setup() {
 		}
 		let firstNeutronSpeed = createVector(neutron_speed, 0).rotate(random(-PI / 8, PI / 8));
 		neutronList.push(
-			new Neutron(
+			new Particle(
 				createVector(width / 2 - 300, height / 2),
-				firstNeutronSpeed
+				firstNeutronSpeed,
+				5, 1, "n"
 			)
 		);
 	});
