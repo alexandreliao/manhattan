@@ -262,9 +262,8 @@ function removeRemoved(particles, toRemove) {
 function draw() {
 	background('black');
 
-	if (interact_chance === undefined && frameRate() > 0) {
-		interact_chance = 1 - pow((1 - .99), 1 / frameRate());
-	}
+	interact_chance = 1 - pow((1 - .99), 1 / frameRate());
+	
 	atomList.forEach(p => {
 		p.draw();
 	});
