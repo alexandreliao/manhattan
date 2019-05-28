@@ -1,6 +1,6 @@
-let uranium_spacing = 100;
-let neutron_speed = 5;
-let interact_chance_ps = .95;
+let uranium_spacing;
+let neutron_speed;
+let interact_chance_ps;
 let interact_chance;
 
 let font_1942;
@@ -49,7 +49,7 @@ class Atom extends Particle {
 
 class Uranium extends Atom {
     constructor(pos, vel) {
-        super(pos, vel, "U", 235);
+        super(pos, vel, 'U', 235);
     }
 
     fission(neutron, neutrons, atoms) {
@@ -59,14 +59,14 @@ class Uranium extends Atom {
 
         let nmomentum = createVector();
         for (let j = 0; j < 3; j++) {
-            let nn = new Particle(this.pos.copy(), p5.Vector.add(this.vel, p5.Vector.random2D().mult(random(neutron_speed * .4, neutron_speed * 1.6))), 5, 1, "n");
+            let nn = new Particle(this.pos.copy(), p5.Vector.add(this.vel, p5.Vector.random2D().mult(random(neutron_speed * .4, neutron_speed * 1.6))), 5, 1, 'n');
             neutrons.push(nn);
             nmomentum.add(nn.momentum());
         }
         let kr = new Atom(
             this.pos.copy(),
             p5.Vector.add(this.vel, p5.Vector.random2D().mult(random(1.5, 6))),
-            "Kr",
+            'Kr',
             89
         );
         nmomentum.add(kr.momentum());
@@ -74,17 +74,13 @@ class Uranium extends Atom {
         let ba = new Atom(
             this.pos.copy(),
             p5.Vector.div(p5.Vector.sub(imomentum, nmomentum), 144),
-            "Ba",
+            'Ba',
             144
         );
         atoms.push(kr);
         atoms.push(ba);
         return true;
     }
-}
-
-function sigmoid(z) {
-    return 1 / (1 + Math.exp(-z));
 }
 
 class Button {
@@ -191,8 +187,9 @@ function setup() {
         neutronList = [];
         uraniumList = [];
         neutron_speed = neutronSpeedSlider.value;
-        uranium_spacing = Math.pow(uraniumSpacingSlider.value, .75) * 3;
+        uranium_spacing = height / uraniumSpacingSlider.value;
         interact_chance_ps = interactChanceSlider.value;
+        
         for (let x = width / 2; x < width; x += uranium_spacing) {
             for (let y = 40; y < height; y += uranium_spacing) {
                 uraniumList.push(new Uranium(
@@ -212,8 +209,8 @@ function setup() {
     });
 
     neutronSpeedSlider = new Slider(24, 96, 'Speed', 20, 5, 50);
-    uraniumSpacingSlider = new Slider(120, 96, 'Density', 20, 100, 250);
-    interactChanceSlider = new Slider(216, 96, 'Chance', 20, .5, 1.0);
+    uraniumSpacingSlider = new Slider(120, 96, 'Density', 20, 5, 10);
+    interactChanceSlider = new Slider(216, 96, 'Chance', 20, .80, .995);
     sliders = [neutronSpeedSlider, uraniumSpacingSlider, interactChanceSlider];
 
     restartButton.onclick();
