@@ -307,6 +307,7 @@ function draw() {
     removeRemoved(atomList, []);
 
     restartButton.draw();
-    neutronSpeedSlider.draw();
-    uraniumSpacingSlider.draw();
+    sliders.forEach(slider => {
+        slider.draw();
+    });
 }
