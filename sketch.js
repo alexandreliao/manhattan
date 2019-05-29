@@ -89,7 +89,7 @@ class Button {
         this.y = y;
         this.text = text;
         this.textSize = textSize;
-        this.width = textSize * text.length;
+        this.width = textSize * text.length / 1.5;
         this.right = x + this.width;
         this.height = textSize;
         this.bottom = y + this.height;
@@ -173,6 +173,7 @@ let neutronList;
 let uraniumList;
 let atomList;
 let restartButton;
+let chuckNeutron;
 
 let sliders;
 let neutronSpeedSlider;
@@ -182,7 +183,18 @@ let interactChanceSlider;
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    restartButton = new Button(24, 24, '(Re)start', 24, function () {
+    chuckNeutron = new Button(144, 24, 'Chuck', 24, function() {
+        let firstNeutronSpeed = createVector(neutron_speed, 0).rotate(random(-PI / 8, PI / 8));
+        neutronList.push(
+            new Particle(
+                createVector(width / 2 - 300, height / 2),
+                firstNeutronSpeed,
+                5, 1, "n"
+            )
+        );
+    });
+
+    restartButton = new Button(24, 24, 'Restart', 24, function () {
         atomList = [];
         neutronList = [];
         uraniumList = [];
@@ -198,14 +210,6 @@ function setup() {
                 ));
             }
         }
-        let firstNeutronSpeed = createVector(neutron_speed, 0).rotate(random(-PI / 8, PI / 8));
-        neutronList.push(
-            new Particle(
-                createVector(width / 2 - 300, height / 2),
-                firstNeutronSpeed,
-                5, 1, "n"
-            )
-        );
     });
 
     neutronSpeedSlider = new Slider(24, 96, 'Speed', 20, 5, 50);
@@ -221,6 +225,9 @@ function setup() {
 function mouseClicked() {
     if (restartButton.mouseOver()) {
         restartButton.onclick();
+    }
+    if (chuckNeutron.mouseOver()) {
+        chuckNeutron.onclick();
     }
 }
 
@@ -304,6 +311,7 @@ function draw() {
     removeRemoved(atomList, []);
 
     restartButton.draw();
+    chuckNeutron.draw();
     sliders.forEach(slider => {
         slider.draw();
     });
