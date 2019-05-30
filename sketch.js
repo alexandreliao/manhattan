@@ -212,7 +212,7 @@ function setup() {
         }
     });
 
-    neutronSpeedSlider = new Slider(24, 96, 'Graphite', 20, 5, 50);
+    neutronSpeedSlider = new Slider(24, 96, 'Graphite', 20, -50, -5);
     uraniumSpacingSlider = new Slider(120, 96, 'Uranium', 20, 5, 10);
     interactChanceSlider = new Slider(216, 96, 'Chance', 20, .80, .995);
     sliders = [neutronSpeedSlider, uraniumSpacingSlider, interactChanceSlider];
