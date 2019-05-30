@@ -198,7 +198,7 @@ function setup() {
         atomList = [];
         neutronList = [];
         uraniumList = [];
-        neutron_speed = neutronSpeedSlider.value;
+        neutron_speed = -neutronSpeedSlider.value;
         uranium_spacing = height / uraniumSpacingSlider.value;
         interact_chance_ps = interactChanceSlider.value;
         
@@ -212,8 +212,8 @@ function setup() {
         }
     });
 
-    neutronSpeedSlider = new Slider(24, 96, 'Speed', 20, 5, 50);
-    uraniumSpacingSlider = new Slider(120, 96, 'Density', 20, 5, 10);
+    neutronSpeedSlider = new Slider(24, 96, 'Graphite', 20, 5, 50);
+    uraniumSpacingSlider = new Slider(120, 96, 'Uranium', 20, 5, 10);
     interactChanceSlider = new Slider(216, 96, 'Chance', 20, .80, .995);
     sliders = [neutronSpeedSlider, uraniumSpacingSlider, interactChanceSlider];
 
