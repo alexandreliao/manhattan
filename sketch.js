@@ -45,6 +45,13 @@ class Atom extends Particle {
     fission(neutron, particles) {
         return false;
     }
+
+    draw() {
+        let shift = p5.Vector.random2D().mult(random(2.5));
+        this.pos.add(shift);
+        super.draw();
+        this.pos.sub(shift);
+    }
 }
 
 class Uranium extends Atom {
